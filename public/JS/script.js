@@ -9,13 +9,17 @@ taskForm.addEventListener('submit', (event => {
 
     let formData = new FormData(taskForm);
     let formResponses = [...formData];
-    console.table(formResponses);
+
     fetch('http://127.0.0.1:91/api/task/create', {
         method: 'POST',
         body: formData
     })
         .then(res => { return res.json() })
-        .then(data => console.log(data))
+        .then(data => {
+            console.log(data);
+            taskForm.reset();
+            //Inform each connection with the new task
+        })
         .catch(err => console.error(err));
 }))
 
@@ -28,10 +32,6 @@ async function init() {
 
     //Foreach task, if task.isForToday is true put it in todayTaskTable else put it in taskTable
     hydrateTables(tasks);
-}
-
-async function manageForm() {
-
 }
 
 function removeTasksFromTables(){
@@ -64,16 +64,49 @@ function hydrateTables(tasks){
 function generateTableRow(task, index){
     let tableRow = document.createElement('tr');
 
-    tableRow.innerHTML = `
-            <th scope="row">${index+1}</th>
-            <td>${task.name}</td>
-            <td>${new Date(task.dueDate).toLocaleDateString("fr")}</td>
-            <td>${task.description}</td>
-            <td>
-                <button class="btn btn-primary" data-action="edit" data-id="${task.id}">Modifier</button>
-                <button class="btn btn-danger" data-action="delete" data-id="${task.id}">Supprimer</button>
-            </td>
-    `
+    let headRow = document.createElement('th');
+    headRow.setAttribute('scope', "row");
+    headRow.innerText = index+1;
+
+    let firstTableDiv = document.createElement('td');
+    firstTableDiv.innerText = task.name;
+
+    let secondTableDiv = document.createElement('td');
+    secondTableDiv.innerText = new Date(task.dueDate).toLocaleDateString();
+
+    let thirdTableDiv = document.createElement('td');
+    thirdTableDiv.innerText = task.description;
+
+    let fourthTableDiv = document.createElement('td');
+
+    let editButton = document.createElement('button');
+    editButton.innerText = "Modifier";
+    editButton.classList.add('btn', 'btn-primary');
+    editButton.setAttribute('data-id', task.id);
+    editButton.addEventListener('click', (event) => {
+        console.log(`Edit task with id ${task.id}`)
+    })
+
+    let deleteButton = document.createElement('button');
+    deleteButton.innerText = "Supprimer";
+    deleteButton.classList.add('btn', 'btn-danger');
+    deleteButton.setAttribute('data-id', task.id);
+    deleteButton.addEventListener('click', (event) => {
+        console.log(`Delete task with id ${task.id}`)
+    })
+
+    fourthTableDiv.append(
+        editButton,
+        deleteButton
+    );
+
+    tableRow.append(
+        headRow,
+        firstTableDiv,
+        secondTableDiv,
+        thirdTableDiv,
+        fourthTableDiv
+    )
 
     return tableRow;
 }
