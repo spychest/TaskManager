@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello TaskApiController!{% endblock %}
+
+{% block body %}
+    <h1 class="text-center">Task Manager</h1>
+    <hr>
+    <div class="row">
+        <div class="col"></div>
+        <div class="col">
+            <form action="#" method="POST" data-task-form>
+                <div class="mb-3">
+                    <label for="taskName" class="form-label">Nom</label>
+                    <input type="text" class="text form-control" name="taskName" id="taskName" placeholder="Call équipe backend, redez-vous client, etc...">
+                </div>
+                <div class="mb-3">
+                    <label for="taskDueDate" class="form-label">Date</label>
+                    <input type="datetime-local" name="dueDate" class="form-control" id="taskDueDate">
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" name="description" id="description" rows="3" placeholder="Call de début de semaine avec l'ensemble de l'équipe backend pour le sprint de la semaine 23"></textarea>
+                </div>
+                <button type="submit" class="btn btn-success">Créer</button>
+            </form>
+        </div>
+        <div class="col"></div>
+    </div>
+    <hr>
+    <div>
+        <h2 class="text-center">Tâche(s) du jour</h2>
+        <table class="table table-hover text-center">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nom</th>
+                <th scope="col">Date</th>
+                <th scope="col">Description</th>
+                <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody data-table="today-task">
+            <tr>
+                <th scope="row">1</th>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td>@mdo</td>
+                <td>
+                    <button class="btn btn-primary" data-action="edit">Modifier</button>
+                    <button class="btn btn-danger" data-action="delete">Supprimer</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <hr>
+    <div>
+        <h2 class="text-center">Tasks</h2>
+        <table class="table table-hover text-center">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nom</th>
+                <th scope="col">Date</th>
+                <th scope="col">Description</th>
+                <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody data-table="task">
+            <tr>
+                <th scope="row">1</th>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td>@mdo</td>
+                <td>
+                    <button class="btn btn-primary" data-action="edit">Modifier</button>
+                    <button class="btn btn-danger" data-action="delete">Supprimer</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="tasks-dashboard"></div>
+    <script src="{{ asset('./JS/script.js') }}"></script>
+{% endblock %}

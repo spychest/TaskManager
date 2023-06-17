@@ -28,6 +28,13 @@ class Task
     )]
     private ?string $description = null;
 
+    public function __construct(string $name, string $dueDate, ?string $description = null)
+    {
+        $this->name = $name;
+        $this->dueDate = new \DateTime($dueDate);
+        $this->description = $description;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -67,5 +74,12 @@ class Task
         $this->description = $description;
 
         return $this;
+    }
+
+    public function isForToday(): bool
+    {
+        $todayAsString = (new \DateTime())->format('d/m/Y');
+        $dueDateAsString = $this->dueDate->format('d/m/Y');
+        return $todayAsString === $dueDateAsString;
     }
 }
