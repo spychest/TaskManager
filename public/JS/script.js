@@ -3,6 +3,9 @@ console.log('JS connected');
 const todayTaskTable = document.querySelector("[data-table='today-task']");
 const taskTable = document.querySelector("[data-table='task']");
 const taskForm = document.querySelector("[data-task-form]")
+const protocol = "http";
+const host = "localhost";
+const baseUrl = protocol+"//"+host;
 
 taskForm.addEventListener('submit', (event => {
     event.preventDefault();
@@ -10,7 +13,7 @@ taskForm.addEventListener('submit', (event => {
     let formData = new FormData(taskForm);
     let formResponses = [...formData];
 
-    fetch('http://127.0.0.1:91/api/task/create', {
+    fetch('/api/task/create', {
         method: 'POST',
         body: formData
     })
@@ -40,7 +43,7 @@ function removeTasksFromTables(){
 }
 
 async function getTask() {
-    let tasks = await fetch('http://127.0.0.1:91/api/task', { method: 'GET'})
+    let tasks = await fetch('/api/task', { method: 'GET'})
         .then((response) => {
             if (!response.ok) {
                 throw new Error(response.error);
