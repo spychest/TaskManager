@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 #[Route("/api/v2/tasks")]
 class ApiController extends AbstractController
@@ -36,16 +37,31 @@ class ApiController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         // Créer une nouvelle tâche avec les données reçues
+        try{
+            $this->taskService->createTaskFromArray($data);
+        } catch (BadRequestHttpException $e) {
+            return $this->json([
+                'status' => 'Error',
+                'message' => $e->getMessage()
+            ],
+            400
+            );
+        }
         $task = new Task($data['taskName'], $data['taskDueDate'], $data['taskDescription']);
 
-        // Définir les propriétés de la tâche en fonction des données
+        // Enregistrer la tâche
         $this->taskService->registerTask($task);
 
         // Envoyer update via Mercure
         $this->mercureService->publishUpdate();
 
         // Gérer la réponse
-        return $this->json(['message' => 'La nouvelle tâche a bien été enregistrée']);
+        return $this->json([
+            'status' => 'Success',
+            'message' => 'La nouvelle tâche a bien été enregistrée'
+        ],
+            201
+        );
     }
 
     #[Route("/{id}", name: "api_task_show", requirements: ["id" => "\d+"], methods: ["GET"])]
@@ -73,9 +89,7 @@ class ApiController extends AbstractController
         }
 
         // Mettre à jour les propriétés de la tâche en fonction des données
-        $task->setName($data['taskName'])
-            ->setDueDate(new \DateTime($data['taskDueDate']))
-            ->setDescription($data['taskDescription']);
+        $task = $this->taskService->updateTaskFromArray($task, $data);
 
         $this->taskService->registerTask($task);
 
