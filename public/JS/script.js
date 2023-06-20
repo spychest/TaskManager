@@ -1,54 +1,21 @@
 console.log('JS connected');
-
 const todayTaskTable = document.querySelector("[data-table='today-task']");
 const taskTable = document.querySelector("[data-table='task']");
-const taskForm = document.querySelector("[data-task-form]")
-
-taskForm.addEventListener('submit', (event => {
-    event.preventDefault();
-
-    let formData = new FormData(taskForm);
-    let formResponses = [...formData];
-
-    fetch('http://127.0.0.1:91/api/task/create', {
-        method: 'POST',
-        body: formData
-    })
-        .then(res => { return res.json() })
-        .then(data => {
-            console.log(data);
-            taskForm.reset();
-            //Inform each connection with the new task
-        })
-        .catch(err => console.error(err));
-}))
 
 async function init() {
-    //Remove element from tables
+    //Vider les tableaux
     removeTasksFromTables();
 
-    //Get tasks from API
-    let tasks = await getTask();
+    //Récupérer les task
+    let tasks = await getTasks();
 
-    //Foreach task, if task.isForToday is true put it in todayTaskTable else put it in taskTable
+    //Remplir les tableaux avec les tâches reçues
     hydrateTables(tasks);
 }
 
 function removeTasksFromTables(){
     todayTaskTable.innerHTML = '';
     taskTable.innerHTML = '';
-}
-
-async function getTask() {
-    let tasks = await fetch('http://127.0.0.1:91/api/task', { method: 'GET'})
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error(response.error);
-            }
-            return response.json();
-        });
-
-    return tasks;
 }
 
 function hydrateTables(tasks){
@@ -79,20 +46,22 @@ function generateTableRow(task, index){
 
     let fourthTableDiv = document.createElement('td');
 
+    // <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="create">
     let editButton = document.createElement('button');
     editButton.innerText = "Modifier";
     editButton.classList.add('btn', 'btn-primary');
     editButton.setAttribute('data-id', task.id);
-    editButton.addEventListener('click', (event) => {
-        console.log(`Edit task with id ${task.id}`)
-    })
+    editButton.setAttribute('data-bs-toggle', "modal");
+    editButton.setAttribute('data-bs-target', "#exampleModal");
+    editButton.setAttribute('data-bs-whatever', "edit");
 
     let deleteButton = document.createElement('button');
     deleteButton.innerText = "Supprimer";
     deleteButton.classList.add('btn', 'btn-danger');
     deleteButton.setAttribute('data-id', task.id);
     deleteButton.addEventListener('click', (event) => {
-        console.log(`Delete task with id ${task.id}`)
+        event.stopPropagation();
+        deleteTask(task.id);
     })
 
     fourthTableDiv.append(
@@ -109,6 +78,114 @@ function generateTableRow(task, index){
     )
 
     return tableRow;
+}
+
+//Modal script (bootstrap documentation)
+const exampleModal = document.getElementById('exampleModal')
+if (exampleModal) {
+    exampleModal.addEventListener('show.bs.modal', async event => {
+        // Button qui a trigger la modal
+        event.stopPropagation();
+
+        const button = event.relatedTarget
+
+        // On récupère l'info contenue dans l'attribut data-bs-whatever (contient create ou edit)
+        const action = button.getAttribute('data-bs-whatever')
+
+        // On change le titre de la modal en fonction de l'action
+        const modalTitle = exampleModal.querySelector('.modal-title')
+        modalTitle.textContent = action === "create" ? "Nouvelle tâche" : "Edition de tâche";
+
+        // On change le button de soumission du formulaire en fonction de l'action
+        const submitButton = document.querySelector("[type=\"submit\"]")
+        submitButton.textContent = action === "create" ? "Créer" : "Valider";
+
+        let nameInput = exampleModal.querySelector('#taskName')
+        let dueDateInput = exampleModal.querySelector('#taskDueDate')
+        let descriptionInput = exampleModal.querySelector('#description')
+
+        if(action !== "create"){
+            // Récupérer les informations de la task
+            let taskId = button.getAttribute('data-id')
+            let task = await getTask(taskId);
+            console.table(task);
+            nameInput.value = task.name;
+            dueDateInput.value = new Date(task.dueDate).toISOString().substring(0, 16);
+            descriptionInput.value = task.description;
+        }
+        submitButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            let taskData = {
+                taskName: nameInput.value,
+                taskDueDate: dueDateInput.value,
+                taskDescription: descriptionInput.value
+            }
+
+            if(action !== "create"){
+                let taskId = button.getAttribute('data-id')
+                updateTask(taskId, taskData);
+            } else {
+                createTask(taskData);
+            }
+        })
+
+    })
+}
+
+const baseUrl = '/api/v2/tasks';
+
+async function fetchData(url, options) {
+    try {
+        const response = await fetch(url, options);
+        if (!response.ok) {
+            throw new Error('Request failed');
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+// Function to get the list of tasks
+function getTasks() {
+    return fetchData(baseUrl);
+}
+
+// Function to create a new task
+function createTask(taskData) {
+    return fetchData(baseUrl+'/create', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(taskData),
+    });
+}
+
+// Function to get a specific task
+function getTask(taskId) {
+    return fetchData(`${baseUrl}/${taskId}`);
+}
+
+// Function to update a specific task
+function updateTask(taskId, taskData) {
+    return fetchData(`${baseUrl}/${taskId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(taskData),
+    });
+}
+
+// Function to delete a specific task
+function deleteTask(taskId) {
+    return fetchData(`${baseUrl}/${taskId}`, {
+        method: 'DELETE',
+    });
 }
 
 init().then((element) => {})

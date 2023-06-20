@@ -30,9 +30,19 @@ class TaskService
         return $this->createTaskFromRequest($request);
     }
 
+    public function getTaskById(int $id): ?Task
+    {
+        return $this->taskRepository->findOneById($id);
+    }
+
     public function registerTask(Task $task): void
     {
         $this->taskRepository->save($task, true);
+    }
+
+    public function removeTask(Task $task)
+    {
+        $this->taskRepository->remove($task, true);
     }
 
     private function checkRequestToCreateTask(Request $request): bool
@@ -41,7 +51,7 @@ class TaskService
             && !empty($request->request->get('dueDate'));
     }
 
-    private function createTaskFromRequest(Request $request)
+    private function createTaskFromRequest(Request $request): Task
     {
         $taskName = $request->request->get('taskName');
         $taskDueDate = $request->request->get('dueDate');
