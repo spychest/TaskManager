@@ -108,7 +108,7 @@ if (exampleModal) {
             // Récupérer les informations de la task
             let taskId = button.getAttribute('data-id')
             let task = await getTask(taskId);
-            console.table(task);
+
             nameInput.value = task.name;
             dueDateInput.value = new Date(task.dueDate).toISOString().substring(0, 16);
             descriptionInput.value = task.description;
