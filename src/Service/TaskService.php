@@ -21,15 +21,6 @@ class TaskService
         return $this->taskRepository->findAll();
     }
 
-    public function getTaskFromRequest(Request $request): Task
-    {
-        if(!$this->checkRequestToCreateTask($request)){
-            throw new BadRequestException('Bad request: At least one of the parameter is missing');
-        }
-
-        return $this->createTaskFromRequest($request);
-    }
-
     public function getTaskById(int $id): ?Task
     {
         return $this->taskRepository->findOneById($id);
@@ -43,19 +34,5 @@ class TaskService
     public function removeTask(Task $task)
     {
         $this->taskRepository->remove($task, true);
-    }
-
-    private function checkRequestToCreateTask(Request $request): bool
-    {
-        return !empty($request->request->get('taskName'))
-            && !empty($request->request->get('dueDate'));
-    }
-
-    private function createTaskFromRequest(Request $request): Task
-    {
-        $taskName = $request->request->get('taskName');
-        $taskDueDate = $request->request->get('dueDate');
-        $description = $request->request->get('taskDescription');
-        return new Task($taskName, $taskDueDate, $description);
     }
 }
