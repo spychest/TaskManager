@@ -2,7 +2,7 @@
 # TaskManager
 Le TaskManager est un outils de programmation et de gestion de tâches. Il est créé dans le cadre d'un test technique mais sera maintenue à jour et se verra enrichie de nouvelles features. Il sera également amélioré dans son architecture et les images docker utilisées peuvent être amenées à être changées.
 
-## Authors
+## Auteur
 - [@spychest](https://www.github.com/spychest)
 
 
