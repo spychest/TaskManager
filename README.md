@@ -8,6 +8,7 @@ Le TaskManager est un outils de programmation et de gestion de tâches. Il est c
 
 ## Stack
 **Client:** Bootstrap 5.3, JavaScript Vanilla
+
 **Server:** Symfony 5.4, PHP 8.2, Mercure, Nginx
 
 ## Lancer localement
