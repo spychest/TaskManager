@@ -4,8 +4,6 @@ namespace App\Service;
 
 use App\Entity\Task;
 use App\Repository\TaskRepository;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
-use Symfony\Component\HttpFoundation\Request;
 
 class TaskService
 {
@@ -31,7 +29,7 @@ class TaskService
         $this->taskRepository->save($task, true);
     }
 
-    public function removeTask(Task $task)
+    public function removeTask(Task $task): void
     {
         $this->taskRepository->remove($task, true);
     }

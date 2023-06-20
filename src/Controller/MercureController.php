@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Service\TaskService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mercure\HubInterface;
@@ -12,12 +11,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class MercureController extends AbstractController
 {
     private HubInterface $hub;
-    private TaskService $taskService;
 
-    public function __construct(HubInterface $hub, TaskService $taskService)
+    public function __construct(HubInterface $hub)
     {
         $this->hub = $hub;
-        $this->taskService = $taskService;
     }
 
     #[Route('/publish', name: 'publish')]
