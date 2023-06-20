@@ -21,11 +21,11 @@ class MercureController extends AbstractController
     }
 
     #[Route('/publish', name: 'publish')]
-    public function publish(HubInterface $hub): Response
+    public function publish(HubInterface $hub, ): Response
     {
         $update = new Update(
             'https://localhost/books/1',
-            json_encode(['status' => 'Hello World !'])
+            json_encode(['status' => 'update published'])
         );
 
         $this->hub->publish($update);

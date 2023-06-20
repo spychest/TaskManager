@@ -3,29 +3,8 @@
 {% block title %}Hello TaskApiController!{% endblock %}
 
 {% block body %}
-    <h1 class="text-center">Task Manager</h1>
-    <hr>
-    <div class="row">
-        <div class="col"></div>
-        <div class="col">
-            <form action="#" method="POST" data-task-form>
-                <div class="mb-3">
-                    <label for="taskName" class="form-label">Nom</label>
-                    <input type="text" class="text form-control" name="taskName" id="taskName" placeholder="Call équipe backend, redez-vous client, etc...">
-                </div>
-                <div class="mb-3">
-                    <label for="taskDueDate" class="form-label">Date</label>
-                    <input type="datetime-local" name="dueDate" class="form-control" id="taskDueDate">
-                </div>
-                <div class="mb-3">
-                    <label for="description" class="form-label">Description</label>
-                    <textarea class="form-control" name="description" id="description" rows="3" placeholder="Call de début de semaine avec l'ensemble de l'équipe backend pour le sprint de la semaine 23"></textarea>
-                </div>
-                <button type="submit" class="btn btn-success">Créer</button>
-            </form>
-        </div>
-        <div class="col"></div>
-    </div>
+    <h1 class="text-center">Task Manager - <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="create">Créer</button></h1>
+
     <hr>
     <div>
         <h2 class="text-center">Tâche(s) du jour</h2>
@@ -63,6 +42,36 @@
         </table>
     </div>
     <div class="tasks-dashboard"></div>
+    <!-- Form modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Nouvelle tâche</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="#" method="POST" data-task-form>
+                        <div class="mb-3">
+                            <label for="taskName" class="form-label">Nom</label>
+                            <input type="text" class="text form-control" name="taskName" id="taskName" placeholder="Call équipe backend, redez-vous client, etc...">
+                        </div>
+                        <div class="mb-3">
+                            <label for="taskDueDate" class="form-label">Date</label>
+                            <input type="datetime-local" name="dueDate" class="form-control" id="taskDueDate">
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" name="taskDescription" id="description" rows="3" placeholder="Call de début de semaine avec l'ensemble de l'équipe backend pour le sprint de la semaine 23"></textarea>
+                        </div>
+                        <input type="hidden" value="" data-action>
+                        <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Créer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End of form modal -->
     <script src="{{ asset('./JS/script.js') }}"></script>
     <script>
         const eventSource = new EventSource("{{ mercure('https://localhost/books/1')|escape('js') }}");
