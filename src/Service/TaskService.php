@@ -10,6 +10,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class TaskService
 {
     private TaskRepository $taskRepository;
+
     private ValidatorInterface $validator;
 
     public function __construct(TaskRepository $taskRepository, ValidatorInterface $validator)
@@ -20,7 +21,7 @@ class TaskService
 
     public function createTaskFromArray(array $dataArray): Task
     {
-        if(!$this->checkIfArrayIsValid($dataArray)){
+        if (! $this->checkIfArrayIsValid($dataArray)) {
             throw new BadRequestHttpException('Au moins une des données attendue est manquante');
         }
 
@@ -33,7 +34,7 @@ class TaskService
 
     public function updateTaskFromArray(Task $task, array $dataArray): Task
     {
-        if(!$this->checkIfArrayIsValid($dataArray)){
+        if (! $this->checkIfArrayIsValid($dataArray)) {
             throw new BadRequestHttpException('Au moins une des données attendue est manquante');
         }
 

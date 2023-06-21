@@ -11,10 +11,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+
 #[Route("/api/v2/tasks")]
 class ApiController extends AbstractController
 {
     private TaskService $taskService;
+
     private MercureService $mercureService;
 
     public function __construct(TaskService $taskService, MercureService $mercureService)
@@ -37,14 +39,15 @@ class ApiController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         // Créer une nouvelle tâche avec les données reçues
-        try{
+        try {
             $this->taskService->createTaskFromArray($data);
         } catch (BadRequestHttpException $e) {
-            return $this->json([
-                'status' => 'Error',
-                'message' => $e->getMessage()
-            ],
-            400
+            return $this->json(
+                [
+                    'status' => 'Error',
+                    'message' => $e->getMessage(),
+                ],
+                400
             );
         }
         $task = new Task($data['taskName'], $data['taskDueDate'], $data['taskDescription']);
@@ -56,15 +59,18 @@ class ApiController extends AbstractController
         $this->mercureService->publishUpdate();
 
         // Gérer la réponse
-        return $this->json([
-            'status' => 'Success',
-            'message' => 'La nouvelle tâche a bien été enregistrée'
-        ],
+        return $this->json(
+            [
+                'status' => 'Success',
+                'message' => 'La nouvelle tâche a bien été enregistrée',
+            ],
             201
         );
     }
 
-    #[Route("/{id}", name: "api_task_show", requirements: ["id" => "\d+"], methods: ["GET"])]
+    #[Route("/{id}", name: "api_task_show", requirements: [
+        "id" => "\d+",
+    ], methods: ["GET"])]
     public function show(int $id): JsonResponse
     {
         $task = $this->taskService->getTaskById($id);
@@ -72,19 +78,22 @@ class ApiController extends AbstractController
         return $this->json($task);
     }
 
-    #[Route("/{id}", name: "api_task_update", requirements: ["id" => "\d+"], methods: ["PUT"])]
+    #[Route("/{id}", name: "api_task_update", requirements: [
+        "id" => "\d+",
+    ], methods: ["PUT"])]
     public function update(Request $request, int $id): Response
     {
         $data = json_decode($request->getContent(), true);
 
         $task = $this->taskService->getTaskById($id);
 
-        if (!$task) {
-            return $this->json([
-                'Status' => 'Error',
-                'Message' => 'La tâche que vous souhaitez modifier n\'existe pas.'
-            ],
-            404
+        if (! $task) {
+            return $this->json(
+                [
+                    'Status' => 'Error',
+                    'Message' => 'La tâche que vous souhaitez modifier n\'existe pas.',
+                ],
+                404
             );
         }
 
@@ -97,19 +106,24 @@ class ApiController extends AbstractController
         $this->mercureService->publishUpdate();
 
         // Gérer la réponse
-        return $this->json(['message' => 'La tâche a bien été mise à jour']);
+        return $this->json([
+            'message' => 'La tâche a bien été mise à jour',
+        ]);
     }
 
-    #[Route("/{id}", name: "api_task_delete", requirements: ["id" => "\d+"], methods: ["DELETE"])]
+    #[Route("/{id}", name: "api_task_delete", requirements: [
+        "id" => "\d+",
+    ], methods: ["DELETE"])]
     public function delete(int $id): Response
     {
         $task = $this->taskService->getTaskById($id);
 
-        if (!$task) {
-            return $this->json([
-                'Status' => 'Error',
-                'Message' => 'La tâche que vous souhaitez modifier n\'existe pas.'
-            ],
+        if (! $task) {
+            return $this->json(
+                [
+                    'Status' => 'Error',
+                    'Message' => 'La tâche que vous souhaitez modifier n\'existe pas.',
+                ],
                 404
             );
         }
@@ -119,6 +133,8 @@ class ApiController extends AbstractController
         // Envoyer update via Mercure
         $this->mercureService->publishUpdate();
 
-        return $this->json(['message' => 'La tâche a bien été supprimée']);
+        return $this->json([
+            'message' => 'La tâche a bien été supprimée',
+        ]);
     }
 }
