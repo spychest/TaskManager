@@ -39,7 +39,9 @@ function generateTableRow(task, index){
     firstTableDiv.innerText = task.name;
 
     let secondTableDiv = document.createElement('td');
+    let dateObjectToShow = new Date(task.dueDate);
     secondTableDiv.innerText = new Date(task.dueDate).toLocaleDateString();
+    secondTableDiv.innerText = `${dateObjectToShow.toLocaleDateString()}, à ${String(dateObjectToShow.getHours()).padStart(2,'0')}:${String (dateObjectToShow.getMinutes()).padStart(2,'0')}`;
 
     let thirdTableDiv = document.createElement('td');
     thirdTableDiv.innerText = task.description;
