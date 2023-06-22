@@ -40,8 +40,8 @@ class ApiController extends AbstractController
 
         // Créer une nouvelle tâche avec les données reçues
         try {
-            $this->taskService->createTaskFromArray($data);
-        } catch (BadRequestHttpException $e) {
+            $task = $this->taskService->createTaskFromArray($data);
+        } catch (BadRequestHttpException|\RuntimeException $e) {
             return $this->json(
                 [
                     'status' => 'Error',
@@ -50,7 +50,6 @@ class ApiController extends AbstractController
                 400
             );
         }
-        $task = new Task($data['taskName'], $data['taskDueDate'], $data['taskDescription']);
 
         // Enregistrer la tâche
         $this->taskService->registerTask($task);

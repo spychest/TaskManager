@@ -16,10 +16,10 @@ class Task
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $dueDate = null;
+    private \DateTimeInterface $dueDate;
 
     #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    private string $name;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Assert\Length(
@@ -30,8 +30,20 @@ class Task
 
     public function __construct(string $name, string $dueDate, ?string $description = null)
     {
+        if(empty($name) || empty($dueDate)){
+            throw new \RuntimeException("Le nom et la date de la tâche ne peuvent pas être non définies, null ou vide");
+        }
         $this->name = $name;
-        $this->dueDate = new \DateTime($dueDate);
+
+        try {
+            $this->dueDate = new \DateTime($dueDate);
+        } catch (\Exception $e) {
+            throw new \RuntimeException("La date de la tâche doit être une chaine de caractères datetime-local valide.");
+        }
+
+        if(strlen($description) > 500){
+            throw new \RuntimeException("La description de la tâche ne peut pas depasser les 500 caractères.");
+        }
         $this->description = $description;
     }
 
