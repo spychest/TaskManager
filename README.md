@@ -27,7 +27,7 @@ Lancer les containers docker à l'aide de docker-compose.
 ```bash
   docker-compose up -d
 ```
-Vous pouvez alors vous rendre sur la landing page au port 81
+Vous pouvez alors vous rendre sur la landing page http://localhost:81/
 
 
 ## Deploiement
