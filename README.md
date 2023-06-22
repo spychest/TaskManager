@@ -29,11 +29,11 @@ Installer les dépendances à l'aide de composer.
 ```
 Créer la base de donnée.
 ```bash
-docker-compose exec task-php-fpm php bin/console d:d:c
+  docker-compose exec task-php-fpm php bin/console d:d:c
 ```
 Executer les migrations
 ```bash
-docker-compose exec task-php-fpm php bin/console d:m:m
+  docker-compose exec task-php-fpm php bin/console d:m:m
 ```
 Vous pouvez alors vous rendre sur la landing page http://localhost:81/
 
