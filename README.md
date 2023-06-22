@@ -27,6 +27,14 @@ Lancer les containers docker à l'aide de docker-compose.
 ```bash
   docker-compose up -d
 ```
+Aller dans le container task-php-fpm.
+```bash
+docker-compose exec task-php-fpm
+```
+Executer les migrations
+```bash
+php bin/console d:m:m
+```
 Vous pouvez alors vous rendre sur la landing page http://localhost:81/
 
 
