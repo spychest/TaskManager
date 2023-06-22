@@ -19,21 +19,21 @@ Cloner le projet depuis github à l'aide de git.
 ```bash
   git clone https://github.com/spychest/TaskManager.git
 ```
-Installer les dépendances à l'aide de composer
-```bash
-  composer install
-```
 Lancer les containers docker à l'aide de docker-compose.
 ```bash
   docker-compose up -d
 ```
-Aller dans le container task-php-fpm.
+Installer les dépendances à l'aide de composer.
 ```bash
-docker-compose exec task-php-fpm
+  docker-compose exec task-php-fpm composer install
+```
+Créer la base de donnée.
+```bash
+docker-compose exec task-php-fpm php bin/console d:d:c
 ```
 Executer les migrations
 ```bash
-php bin/console d:m:m
+docker-compose exec task-php-fpm php bin/console d:m:m
 ```
 Vous pouvez alors vous rendre sur la landing page http://localhost:81/
 
