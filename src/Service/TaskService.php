@@ -66,7 +66,9 @@ class TaskService
 
     public function getAllTasks(): array
     {
-        return $this->taskRepository->findBy([], ['dueDate' => 'ASC']);
+        return $this->taskRepository->findBy([], [
+            'dueDate' => 'ASC',
+        ]);
     }
 
     public function getTaskById(int $id): ?Task

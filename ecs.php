@@ -27,5 +27,6 @@ return function (ECSConfig $ecsConfig): void {
         // SetList::NAMESPACES,
          SetList::COMMENTS,
          SetList::PSR_12,
+         SetList::DOCTRINE_ANNOTATIONS
     ]);
 };
