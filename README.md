@@ -17,7 +17,7 @@ images docker utilisées peuvent être amenées à changer.
 ## Lancer localement
 Cloner le projet depuis github à l'aide de git.
 ```bash
-  git clone git@github.com:spychest/TaskManager.git
+  git clone https://github.com/spychest/TaskManager.git
 ```
 Installer les dépendances à l'aide de composer
 ```bash
