@@ -88,6 +88,7 @@ if (exampleModal) {
         event.stopPropagation();
 
         const button = event.relatedTarget
+        const form = document.querySelector('[data-task-form]');
 
         // On récupère l'info contenue dans l'attribut data-bs-whatever (contient create ou edit)
         const action = button.getAttribute('data-bs-whatever')
@@ -103,34 +104,68 @@ if (exampleModal) {
         let nameInput = exampleModal.querySelector('#taskName')
         let dueDateInput = exampleModal.querySelector('#taskDueDate')
         let descriptionInput = exampleModal.querySelector('#description')
+        form.reset();
 
         if(action !== "create"){
             // Récupérer les informations de la task
             let taskId = button.getAttribute('data-id')
+            submitButton.setAttribute('taskId', taskId);
+
             let task = await getTask(taskId);
 
+            // On pré-remplit le formulaire
             nameInput.value = task.name;
-            dueDateInput.value = new Date(task.dueDate).toISOString().substring(0, 16);
+            dueDateInput.value = adjustTaskDueDateString(task.dueDate);
             descriptionInput.value = task.description;
         }
+
         submitButton.addEventListener('click', (event) => {
             event.preventDefault();
             event.stopPropagation();
+
             let taskData = {
+                taskId: event.target.getAttribute('taskId') ?? null,
                 taskName: nameInput.value,
                 taskDueDate: dueDateInput.value,
                 taskDescription: descriptionInput.value
             }
 
-            if(action !== "create"){
-                let taskId = button.getAttribute('data-id')
-                updateTask(taskId, taskData);
-            } else {
-                createTask(taskData);
-            }
+            event.target.setAttribute('taskData', JSON.stringify(taskData));
         })
+        submitButton.removeEventListener('click', submitForm);
+        submitButton.addEventListener('click', submitForm);
 
+        submitButton.removeAttribute('taskData');
     })
+}
+
+function adjustTaskDueDateString(dueDate){
+    // On récupère une string utilisable comme valeur pour le champ dueDate
+    const dueDateAsObject = new Date(dueDate);
+
+    // On récupère le offset en minutes
+    const timeZoneOffsetInMilliseconds = dueDateAsObject.getTimezoneOffset()*60000;
+
+    // On ajuste la date en se basant sur le offset récupérer (changé en milliseconde)
+    const adjustedDueDateObject = new Date(dueDateAsObject.getTime() - timeZoneOffsetInMilliseconds);
+
+    // On return une string exploitable pour le datetime-local input
+    return adjustedDueDateObject.toISOString().slice(0, 16);
+}
+
+async function submitForm(event){
+    event.preventDefault();
+    event.stopPropagation();
+    event.target.removeAttribute('taskId');
+    let taskData = JSON.parse(event.target.getAttribute('taskData'));
+    let taskId = taskData.taskId;
+    delete taskData.taskId;
+
+    if (!taskId) {
+        await createTask(taskData);
+    } else {
+        await updateTask(taskId, taskData);
+    }
 }
 
 const baseUrl = '/api/v2/tasks';

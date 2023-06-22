@@ -74,7 +74,7 @@
     <!-- End of form modal -->
     <script src="{{ asset('./JS/script.js') }}"></script>
     <script>
-        const eventSource = new EventSource("{{ mercure('https://localhost/books/1')|escape('js') }}");
+        const eventSource = new EventSource("{{ mercure( mercureTopicUrl )|escape('js') }}");
         eventSource.onmessage = event => {
             // Will be called every time an update is published by the server
             console.log(JSON.parse(event.data));

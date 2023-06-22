@@ -8,9 +8,18 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MainController extends AbstractController
 {
+    private string $mercureTopicUrl;
+
+    public function __construct(string $mercureTopicUrl)
+    {
+        $this->mercureTopicUrl = $mercureTopicUrl;
+    }
+
     #[Route('/', name: 'app_main')]
     public function index(): Response
     {
-        return $this->render('task/index.html.twig');
+        return $this->render('task/index.html.twig', [
+            'mercureTopicUrl' => $this->mercureTopicUrl,
+        ]);
     }
 }

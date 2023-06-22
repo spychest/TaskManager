@@ -6,17 +6,18 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class MercureService
 {
-    private const PUBLISHER_URL = "http://webserver-task/publish";
-
     private HttpClientInterface $httpClient;
 
-    public function __construct(HttpClientInterface $httpClient)
+    private string $mercurePublishUrl;
+
+    public function __construct(HttpClientInterface $httpClient, string $mercurePublishUrl)
     {
         $this->httpClient = $httpClient;
+        $this->mercurePublishUrl = $mercurePublishUrl;
     }
 
     public function publishUpdate(): void
     {
-        $request = $this->httpClient->request('GET', self::PUBLISHER_URL);
+        $request = $this->httpClient->request('GET', $this->mercurePublishUrl);
     }
 }

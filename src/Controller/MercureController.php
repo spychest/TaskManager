@@ -12,16 +12,19 @@ class MercureController extends AbstractController
 {
     private HubInterface $hub;
 
-    public function __construct(HubInterface $hub)
+    private string $mercureTopicUrl;
+
+    public function __construct(HubInterface $hub, string $mercureTopicUrl)
     {
         $this->hub = $hub;
+        $this->mercureTopicUrl = $mercureTopicUrl;
     }
 
     #[Route('/publish', name: 'publish')]
     public function publish(HubInterface $hub): Response
     {
         $update = new Update(
-            'https://localhost/books/1',
+            $this->mercureTopicUrl,
             json_encode([
                 'status' => 'update published',
             ])
